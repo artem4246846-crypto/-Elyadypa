@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELYADYPA | Official Premium Escrow</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-blue: #000814;
+            --accent: #00a2ff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-gray: #8b929e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-blue); color: white; overflow-x: hidden; min-height: 100vh; }
+
+        /* [ФОН И СНЕГ] */
+        .ocean-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 0%, #001d3d 0%, var(--bg-blue) 70%);
+            z-index: -2;
+        }
+        #snow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .flake { position: absolute; background: white; border-radius: 50%; opacity: 0.5; filter: blur(1px); animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(100vh) translateX(15px); opacity: 0; } }
+
+        .container { width: 100%; max-width: 440px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ШАПКА */
+        .profile { text-align: center; margin-bottom: 35px; }
+        .avatar-wrap { position: relative; width: 125px; height: 125px; margin: 0 auto 20px; }
+        .avatar { width: 100%; height: 100%; border-radius: 40px; object-fit: cover; border: 2px solid var(--accent); box-shadow: 0 0 30px rgba(0, 162, 255, 0.2); }
+        .online { position: absolute; bottom: 5px; right: 5px; width: 20px; height: 20px; background: #32d74b; border: 4px solid var(--bg-blue); border-radius: 50%; box-shadow: 0 0 15px #32d74b; }
+        
+        h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+        .verify-tag { background: rgba(0, 162, 255, 0.1); border: 1px solid var(--accent); padding: 6px 16px; border-radius: 50px; color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; display: inline-block; }
+
+        /* [НОВОЕ: КАРТОЧКА ОБЪЯСНЕНИЯ] */
+        .info-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border); border-radius: 30px; padding: 25px; margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .info-card h2 { font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .info-card h2 svg { fill: var(--accent); width: 22px; height: 22px; }
+        .info-card p { font-size: 13.5px; line-height: 1.6; color: #cbd5e0; margin-bottom: 15px; }
+        
+        .bullets { display: grid; gap: 10px; }
+        .bullet { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; color: #fff; }
+        .bullet-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); }
+
+        /* КНОПКИ-ССЫЛКИ */
+        .links-grid { display: grid; gap: 12px; margin-bottom: 30px; }
+        .l-card {
+            background: var(--glass); border: 1px solid var(--border); padding: 18px; border-radius: 22px;
+            display: flex; align-items: center; transition: 0.2s;
+        }
+        .l-card:active { transform: scale(0.97); background: rgba(255,255,255,0.07); }
+        .l-icon { width: 45px; height: 45px; background: #001529; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px; border: 1px solid var(--border); }
+        .l-text h3 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+        .l-text p { font-size: 11px; color: var(--text-gray); font-weight: 600; }
+        .arrow { margin-left: auto; color: var(--accent); opacity: 0.5; font-weight: 900; }
+
+        /* СТАТИСТИКА */
+        .stats { display: flex; gap: 12px; margin-bottom: 30px; }
+        .s-item { flex: 1; background: var(--glass); border: 1px solid var(--border); padding: 15px; border-radius: 20px; text-align: center; }
+        .s-item b { display: block; font-size: 22px; font-weight: 900; color: var(--accent); }
+        .s-item span { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-gray); font-weight: 800; }
+
+        /* КОШЕЛЕК */
+        .wallet { background: #000; border: 1px solid #1a1a1a; border-top: 3px solid #6e3cb6; padding: 20px; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .w-addr { background: #080808; border: 1px dashed #333; padding: 12px; border-radius: 12px; font-family: monospace; font-size: 10px; color: #777; margin-top: 10px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
+
+        #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 50px; font-weight: 900; font-size: 12px; transition: 0.4s; z-index: 1000; }
+        #toast.active { bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="ocean-bg"></div>
+    <div id="snow"></div>
+    <div id="toast">ADRESS COPIED</div>
+
+    <div class="container">
+        
+        <div class="profile">
+            <div class="avatar-wrap">
+                <img src="IMG_20260326_092632_645.jpg" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=E&background=00a2ff&color=fff'">
+                <div class="online"></div>
+            </div>
+            <h1>ELYADYPA</h1>
+            <div class="verify-tag">Official Escrow Service</div>
+        </div>
+
+        <!-- КАРТОЧКА ОБЪЯСНЕНИЯ -->
+        <div class="info-card">
+            <h2>
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>
+                Кто такой Гарант?
+            </h2>
+            <p>
+                Я выступаю доверенным посредником в ваших сделках. Моя задача — исключить риск мошенничества: я удерживаю средства покупателя до тех пор, пока продавец не выполнит все обязательства.
+            </p>
+            <div class="bullets">
+                <div class="bullet"><div class="bullet-dot"></div> Полная анонимность сторон</div>
+                <div class="bullet"><div class="bullet-dot"></div> Защита от возврата платежей</div>
+                <div class="bullet"><div class="bullet-dot"></div> Решение спорных ситуаций</div>
+            </div>
+        </div>
+
+        <!-- ССЫЛКИ -->
+        <div class="links-grid">
+            <a href="https://t.me/Elyadypaa" class="l-card">
+                <div class="l-icon">⭐</div>
+                <div class="l-text">
+                    <h3>Отзывы о работе</h3>
+                    <p>Более 3700+ довольных клиентов</p>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+            <a href="https://t.me/aletr9" class="l-card">
+                <div class="l-icon">📰</div>
+                <div class="l-text">
+                    <h3>Новостной канал</h3>
+                    <p>Актуальные новости и обновления</p>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+            <a href="https://t.me/Elyadypa" class="l-card" style="border-color: var(--accent);">
+                <div class="l-icon" style="background: rgba(0, 162, 255, 0.1);">📱</div>
+                <div class="l-text">
+                    <h3>Написать мне лично</h3>
+                    <p>По вопросам сделок и сотрудничества</p>
+                </div>
+                <div class="arrow">→</div>
+            </a>
+        </div>
+
+        <!-- СТАТИСТИКА -->
+        <div class="stats">
+            <div class="s-item"><b>3.7k+</b><span>Сделок</span></div>
+            <div class="s-item"><b>0%</b><span>Риска</span></div>
+            <div class="s-item"><b>Fast</b><span>Выплаты</span></div>
+        </div>
+
+        <!-- РЕКВИЗИТЫ -->
+        <div class="wallet">
+            <span style="font-size: 9px; font-weight: 900; color: #444; letter-spacing: 2px;">TON REQUISITES</span>
+            <div class="w-addr" onclick="copyW()">
+                <span id="ton">UQDBTEOFwIQn8LvcPrHfTRaWcHF61virBM5kwoK-zuzVzVQW</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; font-size: 9px; color: #222; letter-spacing: 5px; font-weight: 900;">ELYADYPA SERVICES</div>
+    </div>
+
+    <script>
+        // Снег (оптимизированный)
+        const snow = document.getElementById('snow');
+        for (let i = 0; i < 40; i++) {
+            const flake = document.createElement('div');
+            flake.className = 'flake';
+            const size = Math.random() * 3 + 1;
+            flake.style.width = size + 'px';
+            flake.style.height = size + 'px';
+            flake.style.left = Math.random() * 100 + '%';
+            flake.style.top = '-' + Math.random() * 10 + '%';
+            flake.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            flake.style.animationDelay = Math.random() * 5 + 's';
+            snow.appendChild(flake);
+        }
+
+        function copyW() {
+            navigator.clipboard.writeText(document.getElementById('ton').innerText);
+            const toast = document.getElementById('toast');
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 2000);
+        }
+    </script>
+</body>
+</html>
